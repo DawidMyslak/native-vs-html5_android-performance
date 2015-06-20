@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Kursy walut</string>
+    <string name="app_details">Szczegóły</string>
+    
+    <string name="details_1">Pełna nazwa:</string>
+    <string name="details_2">Kod:</string>
+    <string name="details_3">Kurs:</string>
+    <string name="details_4">Źródło danych:</string>
+    <string name="details_5">Data aktualizacji:</string>
+    <string name="details_source">Narodowy Bank Polski</string>
+
+</resources>

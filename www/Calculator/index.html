@@ -1,0 +1,210 @@
+<!DOCTYPE html> 
+<html> 
+	<head> 
+	<title>Kalkulator</title> 
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1"> 
+	<link rel="stylesheet" href="jquery.mobile-1.3.2/jquery.mobile-1.3.2.min.css" />
+	<script src="jquery.mobile-1.3.2/jquery-1.10.2.min.js"></script>
+	<script src="jquery.mobile-1.3.2/jquery.mobile-1.3.2.min.js"></script>
+	<script type="text/javascript">
+		var input = '';
+		var reset = false;
+		
+		function refresh() {
+			$('#expression').val(input);
+		}
+		function display(character) {
+			if (reset) {
+				input = '';
+				reset = false;
+			}
+			input += character;
+			refresh();
+		}
+		function back() {
+			input = input.substr(0, input.length - 1);
+			refresh();
+		}
+		function clear() {
+			input = '';
+			refresh();
+		}
+		
+		function convert(expression) {
+			var priorities = {
+				'(': 0,
+				'+': 1, '-': 1,
+				'×': 2, '÷': 2
+			};
+			var stack = new Array();
+			var output = new Array();
+			
+			for (var i = 0; i < expression.length; i++) {
+				var character = expression[i];
+
+				if (character == '(') {
+					stack.push(character);
+				}
+				else if (character == ')') {
+					var stackCharacter = '';
+					while ((stackCharacter = stack.pop()) != '(') {
+						output.push(stackCharacter);
+					}
+				}
+				else if ($.inArray(character, new Array('+', '-', '×', '÷')) >= 0) {
+					while (stack.length > 0 && priorities[stack[stack.length - 1]] >= priorities[character]) {
+						output.push(stack.pop());
+					}
+					stack.push(character);
+				}
+				else {
+					var j = 0;
+					for (j = i + 1; j < expression.length; j++) {
+						var nextCharacter = expression[j];
+						if ($.inArray(nextCharacter, new Array('(', ')', '+', '-', '×', '÷')) >= 0) {
+							break;
+						}
+						character += nextCharacter;
+					}
+					i = j - 1;
+					output.push(character);
+				}
+			}
+			while (stack.length != 0) {
+				output.push(stack.pop());
+			}
+			return output;
+		}
+		
+		function calculate(expression) {
+			expression = convert(expression);
+			var stack = new Array();
+			
+			for (var i = 0; i < expression.length; i++) {
+				var character = expression[i];
+				
+				if ($.inArray(character, new Array('+', '-', '×', '÷')) >= 0) {
+					var a = parseFloat(stack.pop());
+					var b = parseFloat(stack.pop());
+					if (character == '+') {
+						stack.push(b + a);
+					} else if (character == '-') {
+						stack.push(b - a);
+					} else if (character == '×') {
+						stack.push(b * a);
+					} else if (character == '÷') {
+						stack.push(b / a);
+					}
+				}
+				else {
+					stack.push(character);
+				}
+			}
+			var result = stack.pop();
+			if (result % 1 == 0)
+				result += '.0';
+			return result;
+		}
+		
+		$(document).ready(function() {
+			$('#button-equal').click(function() {
+				var result = calculate(input);
+				clear();
+				display(result);
+				reset = true;
+			});
+			$('#button-back').click(function() {
+				back();
+			});
+			$('#button-clear').click(function() {
+				clear();
+			});
+		});
+	</script>
+</head> 
+<body> 
+
+<div data-role="page">
+    <div data-theme="a" data-role="header">
+        <h3>Kalkulator</h3>
+    </div>
+    <div data-role="content">
+        <div data-role="fieldcontain">
+            <input id="expression" value="" type="text" readonly="readonly">
+        </div>
+        <div class="ui-grid-c">
+            <div class="ui-block-a">
+                <button onclick="display('7')">7</button>
+            </div>
+            <div class="ui-block-b">
+                <button onclick="display('8')">8</button>
+            </div>
+            <div class="ui-block-c">
+                <button onclick="display('9')">9</button>
+            </div>
+            <div class="ui-block-d">
+				<button onclick="display('÷')">÷</button>
+            </div>
+        </div>
+        <div class="ui-grid-c">
+            <div class="ui-block-a">
+                <button onclick="display('4')">4</button>
+            </div>
+            <div class="ui-block-b">
+                <button onclick="display('5')">5</button>
+            </div>
+            <div class="ui-block-c">
+                <button onclick="display('6')">6</button>
+            </div>
+            <div class="ui-block-d">
+				<button onclick="display('×')">×</button>
+            </div>
+        </div>
+        <div class="ui-grid-c">
+            <div class="ui-block-a">
+                <button onclick="display('1')">1</button>
+            </div>
+            <div class="ui-block-b">
+                <button onclick="display('2')">2</button>
+            </div>
+            <div class="ui-block-c">
+                <button onclick="display('3')">3</button>
+            </div>
+            <div class="ui-block-d">
+                <button onclick="display('-')">-</button>
+            </div>
+        </div>
+        <div class="ui-grid-c">
+            <div class="ui-block-a">
+                <button onclick="display('0')">0</button>
+            </div>
+            <div class="ui-block-b">
+                <button onclick="display('(')">(</button>
+            </div>
+            <div class="ui-block-c">
+                <button onclick="display(')')">)</button>
+            </div>
+            <div class="ui-block-d">
+                <button onclick="display('+')">+</button>
+            </div>
+        </div>
+		<div class="ui-grid-c">
+            <div class="ui-block-a">
+				<button id="button-clear">C</button>
+            </div>
+			<div class="ui-block-b">
+				<button id="button-back"><</button>
+            </div>
+			<div class="ui-block-c">
+                <button onclick="display('.')">.</button>
+            </div>
+            <div class="ui-block-d">
+				<button id="button-equal">=</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

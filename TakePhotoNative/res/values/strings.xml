@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Zrób zdjęcie</string>
+    <string name="action_settings">Settings</string>
+    <string name="content_description"></string>
+    <string name="photo_button">Uruchom kamerę</string>
+
+</resources>
